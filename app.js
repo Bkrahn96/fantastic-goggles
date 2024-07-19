@@ -15,12 +15,14 @@ document.getElementById('findRestaurant').onclick = function() {
                         // Show only the first 3 results
                         data.results.slice(0, 3).forEach(restaurant => {
                             const div = document.createElement('div');
+                            const distance = calculateDistance(lat, lon, restaurant.geometry.location.lat, restaurant.geometry.location.lng);
+                            const types = restaurant.types ? restaurant.types.join(', ') : 'N/A';
                             div.innerHTML = `
                                 <h2>${restaurant.name}</h2>
                                 <p>Address: ${restaurant.vicinity}</p>
-                                <p>Type: ${restaurant.types ? restaurant.types.join(', ') : 'N/A'}</p>
-                                <p>Rating: ${restaurant.rating ? restaurant.rating : 'N/A'}</p>
-                                <p>Distance: ${(calculateDistance(lat, lon, restaurant.geometry.location.lat, restaurant.geometry.location.lng)).toFixed(2)} miles</p>
+                                <p>Type: ${types}</p>
+                                <p>Distance: ${distance.toFixed(2)} miles</p>
+                                <p>Rating: ${restaurant.rating || 'N/A'}</p>
                             `;
                             results.appendChild(div);
                         });
@@ -44,12 +46,12 @@ document.getElementById('findRestaurant').onclick = function() {
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 3958.8; // Radius of the Earth in miles
-    const rlat1 = lat1 * (Math.PI / 180); // Convert degrees to radians
-    const rlat2 = lat2 * (Math.PI / 180); // Convert degrees to radians
-    const difflat = rlat2 - rlat1; // Radian difference (latitudes)
-    const difflon = (lon2 - lon1) * (Math.PI / 180); // Radian difference (longitudes)
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+        0.5 - Math.cos(dLat)/2 + 
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        (1 - Math.cos(dLon))/2;
 
-    const d = 2 * R * Math.asin(Math.sqrt(Math.sin(difflat / 2) * Math.sin(difflat / 2) +
-        Math.cos(rlat1) * Math.cos(rlat2) * Math.sin(difflon / 2) * Math.sin(difflon / 2)));
-    return d;
+    return R * 2 * Math.asin(Math.sqrt(a));
 }
