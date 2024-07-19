@@ -1,7 +1,4 @@
 [build]
-  functions = "functions"
-
-[[redirects]]
-  from = "/functions/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
+  functions = "netlify/functions"
+[functions]
+  environment = { GOOGLE_PLACES_API_KEY = "AIzaSyAQOuogIYyjxwC1VtkoCSzuA6IHyRVFxlI" }
