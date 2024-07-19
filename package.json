@@ -1,0 +1,14 @@
+{
+  "name": "fantastic-goggles",
+  "version": "1.0.0",
+  "description": "A simple project to fetch nearby restaurants using Google Places API and Netlify Functions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  },
+  "author": "",
+  "license": "ISC"
+}
