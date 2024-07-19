@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const restaurantType = document.getElementById('restaurantType');
     const restaurantTypeLabel = document.getElementById('restaurantTypeLabel');
 
-    // Set default value for mealType based on current time
     const currentHour = new Date().getHours();
     if (currentHour >= 6 && currentHour <= 10) {
         mealType.value = 0; // Breakfast
@@ -14,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
         mealType.value = 2; // Dinner
     }
 
-    // Set default labels
     updateMealTypeLabel();
     updateRestaurantTypeLabel();
 
@@ -35,13 +33,14 @@ document.addEventListener('DOMContentLoaded', function() {
 document.getElementById('findRestaurant').onclick = function() {
     const results = document.getElementById('results');
     const loading = document.getElementById('loading');
+    const restaurantType = document.getElementById('restaurantType').value;
     
     if (navigator.geolocation) {
         loading.style.display = 'block';
         navigator.geolocation.getCurrentPosition(function(position) {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
-            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}`;
+            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}&type=${restaurantType}`;
 
             fetch(url)
                 .then(response => response.json())
@@ -50,7 +49,6 @@ document.getElementById('findRestaurant').onclick = function() {
                     results.innerHTML = '';
                     loading.style.display = 'none';
                     if (data.results && data.results.length > 0) {
-                        // Show only the first 3 results
                         data.results.slice(0, 3).forEach(restaurant => {
                             const div = document.createElement('div');
                             const distance = calculateDistance(lat, lon, restaurant.geometry.location.lat, restaurant.geometry.location.lng);
