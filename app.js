@@ -19,26 +19,17 @@ document.getElementById('findRestaurant').onclick = function() {
                         });
                     } else {
                         results.innerHTML = '<p>No restaurants found.</p>';
-                        console.log('No restaurants found in the API response.');
                     }
                 })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                    const results = document.getElementById('results');
-                    results.innerHTML = '<p>Error fetching data. Please try again later.</p>';
-                });
+                .catch(error => console.error('Error fetching data:', error));
         }, function(error) {
-            const results = document.getElementById('results');
-            results.innerHTML = `<p>No location provided. Please reset your browser's location settings.</p>
-                                 <button id="resetLocation">Reset Location Settings</button>`;
-            document.getElementById('resetLocation').onclick = function() {
-                alert("To reset your browser's location settings, please follow these steps:\n1. Go to your browser settings.\n2. Find the privacy and security settings.\n3. Look for location settings.\n4. Reset or clear the location settings.");
-            };
             console.error('Geolocation error:', error);
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>No location provided.</p>';
         });
     } else {
-        const results = document.getElementById('results');
-        results.innerHTML = `<p>Geolocation is not supported by this browser.</p>`;
         console.error('Geolocation is not supported by this browser.');
+        const results = document.getElementById('results');
+        results.innerHTML = '<p>Geolocation is not supported by this browser.</p>';
     }
 };
