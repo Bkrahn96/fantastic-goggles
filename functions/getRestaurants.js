@@ -11,17 +11,16 @@ exports.handler = async function(event, context) {
 
         // Filter results based on mealType and restaurantType
         const filteredResults = data.results.filter(restaurant => {
-            // Meal type filtering logic (example, adjust as needed)
-            if (mealType == '0' && !restaurant.types.includes('breakfast')) return false;
-            if (mealType == '1' && !restaurant.types.includes('lunch')) return false;
-            if (mealType == '2' && !restaurant.types.includes('dinner')) return false;
+            // Example filtering logic (adjust as needed)
+            const mealTypeMatches = mealType == '0' && restaurant.types.includes('breakfast') ||
+                                    mealType == '1' && restaurant.types.includes('lunch') ||
+                                    mealType == '2' && restaurant.types.includes('dinner');
 
-            // Restaurant type filtering logic (example, adjust as needed)
-            if (restaurantType == '0' && !restaurant.price_level <= 1) return false;
-            if (restaurantType == '1' && (restaurant.price_level < 2 || restaurant.price_level > 3)) return false;
-            if (restaurantType == '2' && restaurant.price_level < 4) return false;
+            const restaurantTypeMatches = restaurantType == '0' && restaurant.price_level <= 1 ||
+                                          restaurantType == '1' && (restaurant.price_level == 2 || restaurant.price_level == 3) ||
+                                          restaurantType == '2' && restaurant.price_level >= 4;
 
-            return true;
+            return mealTypeMatches && restaurantTypeMatches;
         });
 
         return {
@@ -33,6 +32,7 @@ exports.handler = async function(event, context) {
             },
         };
     } catch (error) {
+        console.error('Error fetching data:', error);
         return {
             statusCode: 500,
             body: JSON.stringify({ error: 'Failed to fetch data' }),
