@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateRestaurantTypeLabel() {
-        const restaurantTypes = ['Fast Food', 'Casual Dining', 'Fine Dining'];
+        const restaurantTypes = ['Low End (Quick/Fast Food)', 'Mid (Pub/Sit Down)', 'High End (Fancy/Sit Down)'];
         restaurantTypeLabel.textContent = restaurantTypes[restaurantType.value];
     }
 });
@@ -35,15 +35,13 @@ document.addEventListener('DOMContentLoaded', function() {
 document.getElementById('findRestaurant').onclick = function() {
     const results = document.getElementById('results');
     const loading = document.getElementById('loading');
-    const restaurantType = document.getElementById('restaurantType').value;
     
     if (navigator.geolocation) {
         loading.style.display = 'block';
         navigator.geolocation.getCurrentPosition(function(position) {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
-            const type = mapRestaurantType(restaurantType);
-            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}&type=${type}`;
+            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}`;
 
             fetch(url)
                 .then(response => response.json())
@@ -113,9 +111,4 @@ function handleGeolocationError(error) {
             break;
     }
     alert('Geolocation error. Please check your browser settings and try again.');
-}
-
-function mapRestaurantType(value) {
-    const types = ['fast_food', 'restaurant|bar', 'restaurant|fine_dining'];
-    return types[value];
 }
