@@ -8,6 +8,8 @@ exports.handler = async function(event, context) {
     try {
         const response = await fetch(url);
         const data = await response.json();
+        console.log('API Response:', data.results); // Log the API response for debugging
+        data.results.forEach(restaurant => console.log('Restaurant Types:', restaurant.types)); // Log types for each restaurant
         const filteredData = filterByType(data, type);
         return {
             statusCode: 200,
@@ -29,7 +31,7 @@ function filterByType(data, type) {
     const typesMap = {
         "0": ["fast_food"],           // Fast Food
         "1": ["restaurant"],          // Casual Dining
-        "2": ["fine_dining", "restaurant"] // Fine Dining (not an explicit type in Places API)
+        "2": ["restaurant"]           // Fine Dining (not an explicit type in Places API)
     };
 
     const typeKeywords = typesMap[type];
@@ -42,5 +44,6 @@ function filterByType(data, type) {
         typeKeywords.some(keyword => restaurant.types.includes(keyword))
     );
 
+    console.log('Filtered Results:', filteredResults); // Log filtered results for debugging
     return { ...data, results: filteredResults };
 }
