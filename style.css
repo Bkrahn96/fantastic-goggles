@@ -20,3 +20,9 @@ body {
     font-size: 1.2em;
     margin-top: 20px;
 }
+label {
+    margin-right: 10px;
+}
+select {
+    margin-bottom: 20px;
+}

@@ -1,13 +1,18 @@
+document.addEventListener('DOMContentLoaded', function() {
+    setDefaultMealType();
+});
+
 document.getElementById('findRestaurant').onclick = function() {
     const results = document.getElementById('results');
     const loading = document.getElementById('loading');
-    
+    const mealType = document.getElementById('mealType').value;
+
     if (navigator.geolocation) {
         loading.style.display = 'block';
         navigator.geolocation.getCurrentPosition(function(position) {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
-            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}`;
+            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}&mealType=${mealType}`;
 
             fetch(url)
                 .then(response => response.json())
@@ -77,4 +82,18 @@ function handleGeolocationError(error) {
             break;
     }
     alert('Geolocation error. Please check your browser settings and try again.');
+}
+
+function setDefaultMealType() {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const mealTypeSelect = document.getElementById('mealType');
+
+    if (currentHour >= 6 && currentHour < 11) {
+        mealTypeSelect.value = 'breakfast';
+    } else if (currentHour >= 11 && currentHour < 16) {
+        mealTypeSelect.value = 'lunch';
+    } else {
+        mealTypeSelect.value = 'dinner';
+    }
 }
