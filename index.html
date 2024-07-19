@@ -11,15 +11,23 @@
     <div class="container">
         <h1>Find a Restaurant</h1>
         <button id="findRestaurant">Find Nearby Restaurant</button>
-        <div>
-            <label for="mealType">Meal Type:</label>
-            <input type="range" id="mealType" name="mealType" min="0" max="2" step="1">
-            <span id="mealTypeLabel"></span>
+        <div class="slider-container">
+            <label for="mealTime">Select Meal Time:</label>
+            <input type="range" id="mealTime" name="mealTime" min="0" max="2">
+            <div class="slider-labels">
+                <span>Breakfast</span>
+                <span>Lunch</span>
+                <span>Dinner</span>
+            </div>
         </div>
-        <div>
-            <label for="restaurantType">Restaurant Type:</label>
-            <input type="range" id="restaurantType" name="restaurantType" min="0" max="2" step="1">
-            <span id="restaurantTypeLabel"></span>
+        <div class="slider-container">
+            <label for="restaurantType">Select Restaurant Type:</label>
+            <input type="range" id="restaurantType" name="restaurantType" min="0" max="2">
+            <div class="slider-labels">
+                <span>Fast Food</span>
+                <span>Casual Dining</span>
+                <span>Fine Dining</span>
+            </div>
         </div>
         <div id="loading" style="display:none;">Loading...</div>
         <div id="results"></div>

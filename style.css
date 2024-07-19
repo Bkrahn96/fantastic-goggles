@@ -12,6 +12,15 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center; /* Center the content */
 }
+.slider-container {
+    margin: 20px 0;
+    text-align: left;
+}
+.slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+}
 #results div {
     margin-bottom: 15px;
     text-align: left; /* Align results to the left */
