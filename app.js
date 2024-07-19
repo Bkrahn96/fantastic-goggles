@@ -23,13 +23,18 @@ document.getElementById('findRestaurant').onclick = function() {
                 })
                 .catch(error => console.error('Error fetching data:', error));
         }, function(error) {
-            console.error('Geolocation error:', error);
             const results = document.getElementById('results');
-            results.innerHTML = '<p>No location provided.</p>';
+            results.innerHTML = `<p>No location provided.</p><button id="resetLocation">Reset Location Settings</button>`;
+            document.getElementById('resetLocation').onclick = function() {
+                navigator.permissions.revoke({ name: 'geolocation' }).then(function(result) {
+                    console.log('Geolocation permission reset.');
+                });
+            };
+            console.error('Geolocation error:', error);
         });
     } else {
-        console.error('Geolocation is not supported by this browser.');
         const results = document.getElementById('results');
-        results.innerHTML = '<p>Geolocation is not supported by this browser.</p>';
+        results.innerHTML = `<p>Geolocation is not supported by this browser.</p>`;
+        console.error('Geolocation is not supported by this browser.');
     }
 };
