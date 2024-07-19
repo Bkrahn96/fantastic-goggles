@@ -10,11 +10,19 @@
 <body>
     <div class="container">
         <h1>Find a Restaurant</h1>
-        <select id="mealType">
-            <option value="breakfast">Breakfast</option>
-            <option value="lunch">Lunch</option>
-            <option value="dinner">Dinner</option>
-        </select>
+        <div>
+            <label for="mealType">Meal Type:</label>
+            <select id="mealType">
+                <option value="breakfast">Breakfast</option>
+                <option value="lunch">Lunch</option>
+                <option value="dinner">Dinner</option>
+            </select>
+        </div>
+        <div>
+            <label for="restaurantType">Restaurant Type:</label>
+            <input type="range" id="restaurantType" min="1" max="10" value="5">
+            <div id="restaurantTypeValue">5 (Moderate)</div>
+        </div>
         <button id="findRestaurant">Find Nearby Restaurant</button>
         <div id="loading" style="display:none;">Loading...</div>
         <div id="results"></div>

@@ -1,26 +1,9 @@
 const fetch = require('node-fetch');
 
 exports.handler = async function(event, context) {
-    const { lat, lon, mealType } = event.queryStringParameters;
-    const apiKey = 'YOUR_GOOGLE_PLACES_API_KEY';
-    let type;
-
-    switch(mealType) {
-        case 'breakfast':
-            type = 'breakfast';
-            break;
-        case 'lunch':
-            type = 'lunch';
-            break;
-        case 'dinner':
-            type = 'dinner';
-            break;
-        default:
-            type = 'restaurant';
-            break;
-    }
-
-    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=1500&type=${type}&key=${apiKey}`;
+    const { lat, lon } = event.queryStringParameters;
+    const apiKey = 'AIzaSyAQOuogIYyjxwC1VtkoCSzuA6IHyRVFxlI';
+    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=1500&type=restaurant&key=${apiKey}`;
 
     try {
         const response = await fetch(url);

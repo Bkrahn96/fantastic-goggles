@@ -1,18 +1,26 @@
 document.addEventListener('DOMContentLoaded', function() {
     setDefaultMealType();
+    const restaurantTypeSlider = document.getElementById('restaurantType');
+    const restaurantTypeValue = document.getElementById('restaurantTypeValue');
+
+    restaurantTypeSlider.oninput = function() {
+        restaurantTypeValue.textContent = `${this.value} (${getRestaurantTypeLabel(this.value)})`;
+    };
 });
 
 document.getElementById('findRestaurant').onclick = function() {
     const results = document.getElementById('results');
     const loading = document.getElementById('loading');
-    const mealType = document.getElementById('mealType').value;
 
     if (navigator.geolocation) {
         loading.style.display = 'block';
         navigator.geolocation.getCurrentPosition(function(position) {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
-            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}&mealType=${mealType}`;
+            const mealType = document.getElementById('mealType').value;
+            const restaurantType = document.getElementById('restaurantType').value;
+
+            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}&mealType=${mealType}&restaurantType=${restaurantType}`;
 
             fetch(url)
                 .then(response => response.json())
@@ -54,16 +62,24 @@ document.getElementById('findRestaurant').onclick = function() {
 };
 
 function setDefaultMealType() {
-    const now = new Date();
-    const hour = now.getHours();
-    const mealTypeSelect = document.getElementById('mealType');
-    
-    if (hour >= 5 && hour < 11) {
-        mealTypeSelect.value = 'breakfast';
-    } else if (hour >= 11 && hour < 16) {
-        mealTypeSelect.value = 'lunch';
+    const mealType = document.getElementById('mealType');
+    const currentHour = new Date().getHours();
+    if (currentHour >= 5 && currentHour < 11) {
+        mealType.value = 'breakfast';
+    } else if (currentHour >= 11 && currentHour < 17) {
+        mealType.value = 'lunch';
     } else {
-        mealTypeSelect.value = 'dinner';
+        mealType.value = 'dinner';
+    }
+}
+
+function getRestaurantTypeLabel(value) {
+    if (value <= 3) {
+        return 'Quick/Fast Food';
+    } else if (value <= 7) {
+        return 'Moderate';
+    } else {
+        return 'Sit-Down';
     }
 }
 
