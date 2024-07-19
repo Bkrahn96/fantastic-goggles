@@ -53,7 +53,9 @@ function filterByType(results, type, lat, lon) {
         "2": ["restaurant"]           // Fine Dining (not an explicit type in Places API)
     };
 
-    const fastFoodChains = ["mcdonald's", "subway", "burger king", "wendy's", "kfc", "taco bell", "dairy queen"];
+    const fastFoodChains = [
+        "mcdonald's", "subway", "burger king", "wendy's", "kfc", "taco bell", "dairy queen", "dairy queen grill & chill"
+    ];
     
     const typeKeywords = typesMap[type];
     
