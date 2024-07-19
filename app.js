@@ -12,9 +12,15 @@ document.getElementById('findRestaurant').onclick = function() {
                     const results = document.getElementById('results');
                     results.innerHTML = '';
                     if (data.results && data.results.length > 0) {
-                        data.results.forEach(restaurant => {
+                        // Show only the first 3 results
+                        data.results.slice(0, 3).forEach(restaurant => {
                             const div = document.createElement('div');
-                            div.innerHTML = `<h2>${restaurant.name}</h2><p>${restaurant.vicinity}</p>`;
+                            div.innerHTML = `
+                                <h2>${restaurant.name}</h2>
+                                <p>Address: ${restaurant.vicinity}</p>
+                                <p>Type: ${restaurant.types.join(', ')}</p>
+                                <p>Distance: ${(restaurant.distance / 1000).toFixed(2)} km</p>
+                            `;
                             results.appendChild(div);
                         });
                     } else {

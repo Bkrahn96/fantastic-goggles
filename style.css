@@ -10,7 +10,9 @@ body {
     padding: 20px;
     background-color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Center the content */
 }
 #results div {
     margin-bottom: 15px;
+    text-align: left; /* Align results to the left */
 }
