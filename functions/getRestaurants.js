@@ -96,6 +96,8 @@ function sortResults(results, sort, lat, lon) {
         );
     } else if (sort === 'rating') {
         return results.sort((a, b) => b.rating - a.rating);
+    } else if (sort === 'cost') {
+        return results.sort((a, b) => (a.price_level || Infinity) - (b.price_level || Infinity));
     }
     return results;
 }

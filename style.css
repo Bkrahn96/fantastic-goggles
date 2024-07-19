@@ -23,6 +23,10 @@ body {
     display: flex;
     justify-content: space-between;
 }
+.sort-container {
+    text-align: right;
+    margin-top: 10px;
+}
 #results div {
     margin-bottom: 15px;
     text-align: left; /* Align results to the left */
