@@ -34,6 +34,8 @@ function filterByType(data, type) {
         "2": ["restaurant"]           // Fine Dining (not an explicit type in Places API)
     };
 
+    const fastFoodChains = ["mcdonald's", "subway", "burger king", "wendy's", "kfc", "taco bell"];
+    
     const typeKeywords = typesMap[type];
     
     if (!typeKeywords) {
@@ -41,7 +43,8 @@ function filterByType(data, type) {
     }
 
     const filteredResults = data.results.filter(restaurant =>
-        typeKeywords.some(keyword => restaurant.types.includes(keyword))
+        typeKeywords.some(keyword => restaurant.types.includes(keyword)) ||
+        (type === "0" && fastFoodChains.some(chain => restaurant.name.toLowerCase().includes(chain)))
     );
 
     console.log('Filtered Results:', filteredResults); // Log filtered results for debugging
