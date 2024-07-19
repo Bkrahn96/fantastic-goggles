@@ -79,20 +79,17 @@ function handleGeolocationError(error) {
     alert('Geolocation error. Please check your browser settings and try again.');
 }
 
-// Set default values for sliders based on current time
+// Set default slider values based on current time
 window.onload = function() {
-    const now = new Date();
-    const hours = now.getHours();
-    const mealTimeSlider = document.getElementById('mealTime');
-    
-    if (hours >= 6 && hours < 11) {
+    const mealTimeSlider = document.getElementById('mealTimeSlider');
+    const currentHour = new Date().getHours();
+    if (currentHour >= 6 && currentHour < 11) {
         mealTimeSlider.value = 0; // Breakfast
-    } else if (hours >= 11 && hours < 17) {
+    } else if (currentHour >= 11 && currentHour < 17) {
         mealTimeSlider.value = 1; // Lunch
-    } else {
+    } else if (currentHour >= 17 && currentHour < 22) {
         mealTimeSlider.value = 2; // Dinner
+    } else {
+        mealTimeSlider.value = 1; // Default to Lunch
     }
-
-    // Default to casual dining
-    document.getElementById('restaurantType').value = 1;
 };
