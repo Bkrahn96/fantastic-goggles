@@ -16,3 +16,6 @@ body {
     margin-bottom: 15px;
     text-align: left; /* Align results to the left */
 }
+#results p {
+    margin: 5px 0;
+}
