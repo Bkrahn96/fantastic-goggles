@@ -19,9 +19,14 @@ document.getElementById('findRestaurant').onclick = function() {
                         });
                     } else {
                         results.innerHTML = '<p>No restaurants found.</p>';
+                        console.log('No restaurants found in the API response.');
                     }
                 })
-                .catch(error => console.error('Error fetching data:', error));
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    const results = document.getElementById('results');
+                    results.innerHTML = '<p>Error fetching data. Please try again later.</p>';
+                });
         }, function(error) {
             const results = document.getElementById('results');
             results.innerHTML = `<p>No location provided. Please reset your browser's location settings.</p>
