@@ -53,6 +53,20 @@ document.getElementById('findRestaurant').onclick = function() {
     }
 };
 
+function setDefaultMealType() {
+    const now = new Date();
+    const hour = now.getHours();
+    const mealTypeSelect = document.getElementById('mealType');
+    
+    if (hour >= 5 && hour < 11) {
+        mealTypeSelect.value = 'breakfast';
+    } else if (hour >= 11 && hour < 16) {
+        mealTypeSelect.value = 'lunch';
+    } else {
+        mealTypeSelect.value = 'dinner';
+    }
+}
+
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 3958.8; // Radius of the Earth in miles
     const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -82,18 +96,4 @@ function handleGeolocationError(error) {
             break;
     }
     alert('Geolocation error. Please check your browser settings and try again.');
-}
-
-function setDefaultMealType() {
-    const now = new Date();
-    const currentHour = now.getHours();
-    const mealTypeSelect = document.getElementById('mealType');
-
-    if (currentHour >= 6 && currentHour < 11) {
-        mealTypeSelect.value = 'breakfast';
-    } else if (currentHour >= 11 && currentHour < 16) {
-        mealTypeSelect.value = 'lunch';
-    } else {
-        mealTypeSelect.value = 'dinner';
-    }
 }

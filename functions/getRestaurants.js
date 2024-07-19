@@ -2,18 +2,18 @@ const fetch = require('node-fetch');
 
 exports.handler = async function(event, context) {
     const { lat, lon, mealType } = event.queryStringParameters;
-    const apiKey = process.env.GOOGLE_API_KEY;
+    const apiKey = 'YOUR_GOOGLE_PLACES_API_KEY';
     let type;
 
-    switch (mealType) {
+    switch(mealType) {
         case 'breakfast':
-            type = 'breakfast'; // Modify according to the actual place type for breakfast
+            type = 'breakfast';
             break;
         case 'lunch':
-            type = 'lunch'; // Modify according to the actual place type for lunch
+            type = 'lunch';
             break;
         case 'dinner':
-            type = 'dinner'; // Modify according to the actual place type for dinner
+            type = 'dinner';
             break;
         default:
             type = 'restaurant';
