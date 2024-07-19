@@ -2,14 +2,7 @@ const fetch = require('node-fetch');
 
 exports.handler = async function(event, context) {
     const { lat, lon } = event.queryStringParameters;
-    if (!lat || !lon) {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ error: 'No location provided. Please enable location services in your browser settings.' }),
-        };
-    }
-
-    const apiKey = 'YOUR_GOOGLE_PLACES_API_KEY';
+    const apiKey = 'AIzaSyAQOuogIYyjxwC1VtkoCSzuA6IHyRVFxlI';
     const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=1500&type=restaurant&key=${apiKey}`;
 
     try {
