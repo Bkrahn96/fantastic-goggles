@@ -2,7 +2,7 @@ const fetch = require('node-fetch');
 
 exports.handler = async function(event, context) {
     const { lat, lon, type } = event.queryStringParameters;
-    const apiKey = 'AIzaSyAQOuogIYyjxwC1VtkoCSzuA6IHyRVFxlI';
+    const apiKey = process.env.GOOGLE_PLACES_API_KEY;
     const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=1500&type=restaurant&key=${apiKey}`;
 
     try {
@@ -27,9 +27,9 @@ exports.handler = async function(event, context) {
 
 function filterByType(data, type) {
     const typesMap = {
-        "0": ["fast_food"],   // Fast Food
-        "1": ["restaurant"],  // Casual Dining
-        "2": ["fine_dining"]  // Fine Dining
+        "0": ["fast_food"],           // Fast Food
+        "1": ["restaurant"],          // Casual Dining
+        "2": ["fine_dining", "restaurant"] // Fine Dining (not an explicit type in Places API)
     };
 
     const typeKeywords = typesMap[type];
