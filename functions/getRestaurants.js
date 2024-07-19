@@ -3,24 +3,35 @@ const fetch = require('node-fetch');
 exports.handler = async function(event, context) {
     const { lat, lon, type, sort } = event.queryStringParameters;
     const apiKey = process.env.GOOGLE_PLACES_API_KEY;
-    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=5000&type=restaurant&key=${apiKey}`;
+    const baseUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=5000&type=restaurant&key=${apiKey}`;
 
     try {
-        const response = await fetch(url);
-        const data = await response.json();
-        console.log('API Response:', data.results); // Log the API response for debugging
+        let url = baseUrl;
+        let allResults = [];
+        let nextPageToken = null;
 
-        if (data.status !== 'OK') {
-            throw new Error(data.status);
-        }
+        do {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (data.status !== 'OK') {
+                throw new Error(data.status);
+            }
+            allResults = allResults.concat(data.results);
+            nextPageToken = data.next_page_token;
+            if (nextPageToken) {
+                url = `${baseUrl}&pagetoken=${nextPageToken}`;
+                await new Promise(resolve => setTimeout(resolve, 2000)); // Google Places API requires a short delay before fetching the next page
+            }
+        } while (nextPageToken);
 
-        data.results.forEach(restaurant => console.log('Restaurant Types:', restaurant.types)); // Log types for each restaurant
+        console.log('API Response:', allResults); // Log the API response for debugging
+        allResults.forEach(restaurant => console.log('Restaurant Types:', restaurant.types)); // Log types for each restaurant
 
-        const filteredData = filterByType(data, type, lat, lon);
-        const sortedData = sortResults(filteredData.results, sort, lat, lon);
+        const filteredData = filterByType(allResults, type, lat, lon);
+        const sortedData = sortResults(filteredData, sort, lat, lon);
         return {
             statusCode: 200,
-            body: JSON.stringify({ ...filteredData, results: sortedData }),
+            body: JSON.stringify({ results: sortedData }),
             headers: {
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Headers': 'Content-Type',
@@ -35,7 +46,7 @@ exports.handler = async function(event, context) {
     }
 };
 
-function filterByType(data, type, lat, lon) {
+function filterByType(results, type, lat, lon) {
     const typesMap = {
         "0": ["fast_food"],           // Fast Food
         "1": ["restaurant"],          // Casual Dining
@@ -47,10 +58,10 @@ function filterByType(data, type, lat, lon) {
     const typeKeywords = typesMap[type];
     
     if (!typeKeywords) {
-        return data;
+        return results;
     }
 
-    const filteredResults = data.results.filter(restaurant =>
+    let filteredResults = results.filter(restaurant =>
         typeKeywords.some(keyword => restaurant.types.includes(keyword)) ||
         (type === "0" && fastFoodChains.some(chain => restaurant.name.toLowerCase().includes(chain)))
     );
@@ -72,7 +83,7 @@ function filterByType(data, type, lat, lon) {
     });
 
     console.log('Filtered Results:', Object.values(uniqueRestaurants)); // Log filtered results for debugging
-    return { ...data, results: Object.values(uniqueRestaurants) };
+    return Object.values(uniqueRestaurants);
 }
 
 function sortResults(results, sort, lat, lon) {
