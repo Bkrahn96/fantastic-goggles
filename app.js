@@ -8,8 +8,7 @@ document.getElementById('findRestaurant').onclick = function() {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
             const restaurantType = document.getElementById('restaurantTypeSlider').value;
-            const sortOption = document.getElementById('sortOptions').value;
-            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}&type=${restaurantType}&sort=${sortOption}`;
+            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}&type=${restaurantType}`;
 
             fetch(url)
                 .then(response => response.json())

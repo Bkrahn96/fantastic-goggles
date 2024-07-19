@@ -12,6 +12,11 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center; /* Center the content */
 }
+.big-button {
+    font-size: 1.5em;
+    padding: 15px 30px;
+    margin: 20px 0;
+}
 .slider-container {
     margin: 20px 0;
     text-align: center;
@@ -22,10 +27,6 @@ body {
 .slider-labels {
     display: flex;
     justify-content: space-between;
-}
-.sort-container {
-    text-align: right;
-    margin-top: 10px;
 }
 #results div {
     margin-bottom: 15px;

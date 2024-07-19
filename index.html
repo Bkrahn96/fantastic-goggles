@@ -10,7 +10,7 @@
 <body>
     <div class="container">
         <h1>Find a Restaurant</h1>
-        <button id="findRestaurant">Find Nearby Restaurant</button>
+        <button id="findRestaurant" class="big-button">Find Nearby Restaurant</button>
         
         <div class="slider-container">
             <input type="range" min="0" max="2" value="0" class="slider" id="mealTimeSlider">
@@ -28,16 +28,6 @@
                 <span>Casual Dining</span>
                 <span>Fine Dining</span>
             </div>
-        </div>
-
-        <div class="sort-container">
-            <label for="sortOptions">Sort by:</label>
-            <select id="sortOptions">
-                <option value="">None</option>
-                <option value="distance">Distance</option>
-                <option value="rating">Rating</option>
-                <option value="cost">Cost (Low to High)</option>
-            </select>
         </div>
 
         <div id="loading" style="display:none;">Loading...</div>

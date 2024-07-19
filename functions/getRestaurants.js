@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 
 exports.handler = async function(event, context) {
-    const { lat, lon, type, sort } = event.queryStringParameters;
+    const { lat, lon, type } = event.queryStringParameters;
     const apiKey = process.env.GOOGLE_PLACES_API_KEY;
     const baseUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=5000&type=restaurant&key=${apiKey}`;
 
@@ -28,10 +28,9 @@ exports.handler = async function(event, context) {
         allResults.forEach(restaurant => console.log('Restaurant Types:', restaurant.types)); // Log types for each restaurant
 
         const filteredData = filterByType(allResults, type, lat, lon);
-        const sortedData = sortResults(filteredData, sort, lat, lon);
         return {
             statusCode: 200,
-            body: JSON.stringify({ results: sortedData }),
+            body: JSON.stringify({ results: filteredData }),
             headers: {
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Headers': 'Content-Type',
@@ -86,20 +85,6 @@ function filterByType(results, type, lat, lon) {
 
     console.log('Filtered Results:', Object.values(uniqueRestaurants)); // Log filtered results for debugging
     return Object.values(uniqueRestaurants);
-}
-
-function sortResults(results, sort, lat, lon) {
-    if (sort === 'distance') {
-        return results.sort((a, b) => 
-            calculateDistance(lat, lon, a.geometry.location.lat, a.geometry.location.lng) - 
-            calculateDistance(lat, lon, b.geometry.location.lat, b.geometry.location.lng)
-        );
-    } else if (sort === 'rating') {
-        return results.sort((a, b) => b.rating - a.rating);
-    } else if (sort === 'cost') {
-        return results.sort((a, b) => (a.price_level || Infinity) - (b.price_level || Infinity));
-    }
-    return results;
 }
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
