@@ -26,6 +26,7 @@ document.getElementById('findRestaurant').onclick = function() {
             console.error('Geolocation error:', error);
             const results = document.getElementById('results');
             results.innerHTML = '<p>No location provided.</p>';
+            alert('No location provided. Please reset your browser location settings and try again.');
         });
     } else {
         console.error('Geolocation is not supported by this browser.');
