@@ -24,10 +24,16 @@ document.getElementById('findRestaurant').onclick = function() {
                 .catch(error => console.error('Error fetching data:', error));
         }, function(error) {
             console.error('Geolocation error:', error);
-            alert('No location provided. Please enable location services in your browser settings.');
+            handleGeolocationError(error);
         });
     } else {
         console.error('Geolocation is not supported by this browser.');
         alert('Geolocation is not supported by this browser.');
     }
 };
+
+function handleGeolocationError(error) {
+    const results = document.getElementById('results');
+    results.innerHTML = '<p>No location provided. Please enable location services and try again.</p>';
+    alert('No location provided. Please check your browser settings and enable location services.');
+}
