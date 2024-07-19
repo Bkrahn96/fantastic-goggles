@@ -24,8 +24,12 @@ document.getElementById('findRestaurant').onclick = function() {
                 .catch(error => console.error('Error fetching data:', error));
         }, function(error) {
             console.error('Geolocation error:', error);
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>No location provided.</p>';
         });
     } else {
         console.error('Geolocation is not supported by this browser.');
+        const results = document.getElementById('results');
+        results.innerHTML = '<p>Geolocation is not supported by this browser.</p>';
     }
 };
