@@ -1,26 +1,47 @@
 document.addEventListener('DOMContentLoaded', function() {
-    setDefaultMealType();
-    const restaurantTypeSlider = document.getElementById('restaurantType');
-    const restaurantTypeValue = document.getElementById('restaurantTypeValue');
+    const mealType = document.getElementById('mealType');
+    const mealTypeLabel = document.getElementById('mealTypeLabel');
+    const restaurantType = document.getElementById('restaurantType');
+    const restaurantTypeLabel = document.getElementById('restaurantTypeLabel');
 
-    restaurantTypeSlider.oninput = function() {
-        restaurantTypeValue.textContent = `${this.value} (${getRestaurantTypeLabel(this.value)})`;
-    };
+    // Set default value for mealType based on current time
+    const currentHour = new Date().getHours();
+    if (currentHour >= 6 && currentHour <= 10) {
+        mealType.value = 0; // Breakfast
+    } else if (currentHour >= 11 && currentHour <= 14) {
+        mealType.value = 1; // Lunch
+    } else {
+        mealType.value = 2; // Dinner
+    }
+
+    // Set default labels
+    updateMealTypeLabel();
+    updateRestaurantTypeLabel();
+
+    mealType.addEventListener('input', updateMealTypeLabel);
+    restaurantType.addEventListener('input', updateRestaurantTypeLabel);
+
+    function updateMealTypeLabel() {
+        const mealTypes = ['Breakfast', 'Lunch', 'Dinner'];
+        mealTypeLabel.textContent = mealTypes[mealType.value];
+    }
+
+    function updateRestaurantTypeLabel() {
+        const restaurantTypes = ['Low End (Quick/Fast Food)', 'Mid (Pub/Sit Down)', 'High End (Fancy/Sit Down)'];
+        restaurantTypeLabel.textContent = restaurantTypes[restaurantType.value];
+    }
 });
 
 document.getElementById('findRestaurant').onclick = function() {
     const results = document.getElementById('results');
     const loading = document.getElementById('loading');
-
+    
     if (navigator.geolocation) {
         loading.style.display = 'block';
         navigator.geolocation.getCurrentPosition(function(position) {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
-            const mealType = document.getElementById('mealType').value;
-            const restaurantType = document.getElementById('restaurantType').value;
-
-            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}&mealType=${mealType}&restaurantType=${restaurantType}`;
+            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}`;
 
             fetch(url)
                 .then(response => response.json())
@@ -60,28 +81,6 @@ document.getElementById('findRestaurant').onclick = function() {
         results.innerHTML = '<p>Geolocation is not supported by this browser.</p>';
     }
 };
-
-function setDefaultMealType() {
-    const mealType = document.getElementById('mealType');
-    const currentHour = new Date().getHours();
-    if (currentHour >= 5 && currentHour < 11) {
-        mealType.value = 'breakfast';
-    } else if (currentHour >= 11 && currentHour < 17) {
-        mealType.value = 'lunch';
-    } else {
-        mealType.value = 'dinner';
-    }
-}
-
-function getRestaurantTypeLabel(value) {
-    if (value <= 3) {
-        return 'Quick/Fast Food';
-    } else if (value <= 7) {
-        return 'Moderate';
-    } else {
-        return 'Sit-Down';
-    }
-}
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 3958.8; // Radius of the Earth in miles
