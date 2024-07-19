@@ -9,7 +9,13 @@ exports.handler = async function(event, context) {
         const response = await fetch(url);
         const data = await response.json();
         console.log('API Response:', data.results); // Log the API response for debugging
+
+        if (data.status !== 'OK') {
+            throw new Error(data.status);
+        }
+
         data.results.forEach(restaurant => console.log('Restaurant Types:', restaurant.types)); // Log types for each restaurant
+
         const filteredData = filterByType(data, type, lat, lon);
         const sortedData = sortResults(filteredData.results, sort, lat, lon);
         return {
@@ -48,6 +54,13 @@ function filterByType(data, type, lat, lon) {
         typeKeywords.some(keyword => restaurant.types.includes(keyword)) ||
         (type === "0" && fastFoodChains.some(chain => restaurant.name.toLowerCase().includes(chain)))
     );
+
+    // Ensure fast food options are excluded from casual and fine dining
+    if (type !== "0") {
+        filteredResults = filteredResults.filter(restaurant =>
+            !fastFoodChains.some(chain => restaurant.name.toLowerCase().includes(chain))
+        );
+    }
 
     const uniqueRestaurants = {};
     filteredResults.forEach(restaurant => {
