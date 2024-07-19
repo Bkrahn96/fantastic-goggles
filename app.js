@@ -7,7 +7,8 @@ document.getElementById('findRestaurant').onclick = function() {
         navigator.geolocation.getCurrentPosition(function(position) {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
-            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}`;
+            const restaurantType = document.getElementById('restaurantTypeSlider').value;
+            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}&type=${restaurantType}`;
 
             fetch(url)
                 .then(response => response.json())
