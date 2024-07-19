@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const restaurantType = document.getElementById('restaurantType');
     const restaurantTypeLabel = document.getElementById('restaurantTypeLabel');
 
+    // Set default value for mealType based on current time
     const currentHour = new Date().getHours();
     if (currentHour >= 6 && currentHour <= 10) {
         mealType.value = 0; // Breakfast
@@ -13,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
         mealType.value = 2; // Dinner
     }
 
+    // Set default labels
     updateMealTypeLabel();
     updateRestaurantTypeLabel();
 
@@ -25,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateRestaurantTypeLabel() {
-        const restaurantTypes = ['Low End (Quick/Fast Food)', 'Mid (Pub/Sit Down)', 'High End (Fancy/Sit Down)'];
+        const restaurantTypes = ['Fast Food', 'Casual Dining', 'Fine Dining'];
         restaurantTypeLabel.textContent = restaurantTypes[restaurantType.value];
     }
 });
@@ -40,7 +42,8 @@ document.getElementById('findRestaurant').onclick = function() {
         navigator.geolocation.getCurrentPosition(function(position) {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
-            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}&type=${restaurantType}`;
+            const type = mapRestaurantType(restaurantType);
+            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}&type=${type}`;
 
             fetch(url)
                 .then(response => response.json())
@@ -49,6 +52,7 @@ document.getElementById('findRestaurant').onclick = function() {
                     results.innerHTML = '';
                     loading.style.display = 'none';
                     if (data.results && data.results.length > 0) {
+                        // Show only the first 3 results
                         data.results.slice(0, 3).forEach(restaurant => {
                             const div = document.createElement('div');
                             const distance = calculateDistance(lat, lon, restaurant.geometry.location.lat, restaurant.geometry.location.lng);
@@ -109,4 +113,9 @@ function handleGeolocationError(error) {
             break;
     }
     alert('Geolocation error. Please check your browser settings and try again.');
+}
+
+function mapRestaurantType(value) {
+    const types = ['fast_food', 'restaurant|bar', 'restaurant|fine_dining'];
+    return types[value];
 }
