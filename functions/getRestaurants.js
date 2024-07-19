@@ -10,7 +10,7 @@ exports.handler = async function(event, context) {
         const data = await response.json();
         console.log('API Response:', data.results); // Log the API response for debugging
         data.results.forEach(restaurant => console.log('Restaurant Types:', restaurant.types)); // Log types for each restaurant
-        const filteredData = filterByType(data, type);
+        const filteredData = filterByType(data, type, lat, lon);
         const sortedData = sortResults(filteredData.results, sort, lat, lon);
         return {
             statusCode: 200,
@@ -21,14 +21,15 @@ exports.handler = async function(event, context) {
             },
         };
     } catch (error) {
+        console.error('Error fetching data:', error); // Log the error for debugging
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: 'Failed to fetch data' }),
+            body: JSON.stringify({ error: 'Failed to fetch data', details: error.message }),
         };
     }
 };
 
-function filterByType(data, type) {
+function filterByType(data, type, lat, lon) {
     const typesMap = {
         "0": ["fast_food"],           // Fast Food
         "1": ["restaurant"],          // Casual Dining
