@@ -24,11 +24,10 @@ document.getElementById('findRestaurant').onclick = function() {
                 .catch(error => console.error('Error fetching data:', error));
         }, function(error) {
             const results = document.getElementById('results');
-            results.innerHTML = `<p>No location provided.</p><button id="resetLocation">Reset Location Settings</button>`;
+            results.innerHTML = `<p>No location provided. Please reset your browser's location settings.</p>
+                                 <button id="resetLocation">Reset Location Settings</button>`;
             document.getElementById('resetLocation').onclick = function() {
-                navigator.permissions.revoke({ name: 'geolocation' }).then(function(result) {
-                    console.log('Geolocation permission reset.');
-                });
+                alert("To reset your browser's location settings, please follow these steps:\n1. Go to your browser settings.\n2. Find the privacy and security settings.\n3. Look for location settings.\n4. Reset or clear the location settings.");
             };
             console.error('Geolocation error:', error);
         });
