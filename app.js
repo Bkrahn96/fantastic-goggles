@@ -1,30 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const mealType = document.getElementById('mealType');
-    const mealTypeLabel = document.getElementById('mealTypeLabel');
     const restaurantType = document.getElementById('restaurantType');
     const restaurantTypeLabel = document.getElementById('restaurantTypeLabel');
 
-    // Set default value for mealType based on current time
-    const currentHour = new Date().getHours();
-    if (currentHour >= 6 && currentHour <= 10) {
-        mealType.value = 0; // Breakfast
-    } else if (currentHour >= 11 && currentHour <= 14) {
-        mealType.value = 1; // Lunch
-    } else {
-        mealType.value = 2; // Dinner
-    }
-
     // Set default labels
-    updateMealTypeLabel();
     updateRestaurantTypeLabel();
 
-    mealType.addEventListener('input', updateMealTypeLabel);
     restaurantType.addEventListener('input', updateRestaurantTypeLabel);
-
-    function updateMealTypeLabel() {
-        const mealTypes = ['Breakfast', 'Lunch', 'Dinner'];
-        mealTypeLabel.textContent = mealTypes[mealType.value];
-    }
 
     function updateRestaurantTypeLabel() {
         const restaurantTypes = ['Low End (Quick/Fast Food)', 'Mid (Pub/Sit Down)', 'High End (Fancy/Sit Down)'];
@@ -35,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
 document.getElementById('findRestaurant').onclick = function() {
     const results = document.getElementById('results');
     const loading = document.getElementById('loading');
-    const mealType = document.getElementById('mealType').value;
     const restaurantType = document.getElementById('restaurantType').value;
     
     if (navigator.geolocation) {
@@ -43,7 +23,8 @@ document.getElementById('findRestaurant').onclick = function() {
         navigator.geolocation.getCurrentPosition(function(position) {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
-            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}&mealType=${mealType}&restaurantType=${restaurantType}`;
+            const types = getRestaurantTypes(restaurantType);
+            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}&types=${types}`;
 
             fetch(url)
                 .then(response => response.json())
@@ -52,6 +33,7 @@ document.getElementById('findRestaurant').onclick = function() {
                     results.innerHTML = '';
                     loading.style.display = 'none';
                     if (data.results && data.results.length > 0) {
+                        // Show only the first 3 results
                         data.results.slice(0, 3).forEach(restaurant => {
                             const div = document.createElement('div');
                             const distance = calculateDistance(lat, lon, restaurant.geometry.location.lat, restaurant.geometry.location.lng);
@@ -112,4 +94,13 @@ function handleGeolocationError(error) {
             break;
     }
     alert('Geolocation error. Please check your browser settings and try again.');
+}
+
+function getRestaurantTypes(value) {
+    const typeMappings = {
+        0: 'fast_food,meal_takeaway',
+        1: 'restaurant,bar,pub',
+        2: 'restaurant,establishment'
+    };
+    return typeMappings[value] || '';
 }
