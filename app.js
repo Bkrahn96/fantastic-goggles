@@ -3,13 +3,12 @@ document.getElementById('findRestaurant').onclick = function() {
         navigator.geolocation.getCurrentPosition(function(position) {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
-            const apiKey = 'AIzaSyAQOuogIYyjxwC1VtkoCSzuA6IHyRVFxlI';
-            const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=1500&type=restaurant&key=${apiKey}`;
-            
+            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}`;
+
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    console.log('API Response:', data); // Add this line to log the response
+                    console.log('API Response:', data); // Log the API response
                     const results = document.getElementById('results');
                     results.innerHTML = '';
                     if (data.results && data.results.length > 0) {
