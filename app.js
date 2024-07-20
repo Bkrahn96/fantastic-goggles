@@ -1,7 +1,12 @@
+let currentResults = [];
+let currentIndex = 0;
+const RESULTS_PER_PAGE = 3;
+
 document.getElementById('findRestaurant').onclick = function() {
     const results = document.getElementById('results');
     const loading = document.getElementById('loading');
-    
+    const loadMoreButton = document.getElementById('loadMore');
+
     if (navigator.geolocation) {
         loading.style.display = 'block';
         navigator.geolocation.getCurrentPosition(function(position) {
@@ -14,26 +19,12 @@ document.getElementById('findRestaurant').onclick = function() {
                 .then(response => response.json())
                 .then(data => {
                     console.log('API Response:', data); // Log the API response
+                    currentResults = data.results || [];
+                    currentIndex = 0;
                     results.innerHTML = '';
                     loading.style.display = 'none';
-                    if (data.results && data.results.length > 0) {
-                        // Show only the first 3 results
-                        data.results.slice(0, 3).forEach(restaurant => {
-                            const div = document.createElement('div');
-                            const distance = calculateDistance(lat, lon, restaurant.geometry.location.lat, restaurant.geometry.location.lng);
-                            const types = restaurant.types ? restaurant.types.join(', ') : 'N/A';
-                            div.innerHTML = `
-                                <h2>${restaurant.name}</h2>
-                                <p>Address: ${restaurant.vicinity}</p>
-                                <p>Type: ${types}</p>
-                                <p>Distance: ${distance.toFixed(2)} miles</p>
-                                <p>Rating: ${restaurant.rating || 'N/A'}</p>
-                            `;
-                            results.appendChild(div);
-                        });
-                    } else {
-                        results.innerHTML = '<p>No restaurants found.</p>';
-                    }
+                    loadMoreButton.style.display = currentResults.length > RESULTS_PER_PAGE ? 'block' : 'none';
+                    displayNextResults();
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
@@ -48,6 +39,43 @@ document.getElementById('findRestaurant').onclick = function() {
         results.innerHTML = '<p>Geolocation is not supported by this browser.</p>';
     }
 };
+
+document.getElementById('loadMore').onclick = function() {
+    displayNextResults();
+};
+
+function displayNextResults() {
+    const results = document.getElementById('results');
+    const loadMoreButton = document.getElementById('loadMore');
+    const nextResults = currentResults.slice(currentIndex, currentIndex + RESULTS_PER_PAGE);
+
+    nextResults.forEach(restaurant => {
+        const div = document.createElement('div');
+        const distance = calculateDistance(
+            navigator.geolocation.getCurrentPosition.coords.latitude, 
+            navigator.geolocation.getCurrentPosition.coords.longitude, 
+            restaurant.geometry.location.lat, 
+            restaurant.geometry.location.lng
+        );
+        const types = restaurant.types ? restaurant.types.join(', ') : 'N/A';
+        div.innerHTML = `
+            <h2>${restaurant.name}</h2>
+            <p>Address: ${restaurant.vicinity}</p>
+            <p>Type: ${types}</p>
+            <p>Distance: ${distance.toFixed(2)} miles</p>
+            <p>Rating: ${restaurant.rating || 'N/A'}</p>
+        `;
+        results.appendChild(div);
+    });
+
+    currentIndex += RESULTS_PER_PAGE;
+    if (currentIndex >= currentResults.length) {
+        loadMoreButton.style.display = 'none';
+    }
+
+    // Scroll to the newly added items
+    nextResults[nextResults.length - 1].scrollIntoView({ behavior: 'smooth' });
+}
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 3958.8; // Radius of the Earth in miles
