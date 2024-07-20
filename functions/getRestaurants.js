@@ -46,9 +46,9 @@ exports.handler = async function(event, context) {
 
 function filterByType(results, type, lat, lon) {
     const typesMap = {
-        "0": ["meal_takeaway", "fast_food", "cafe", "bakery"],  // Fast Food, Cafe, Bakery
-        "1": ["restaurant"],                                    // Casual Dining
-        "2": ["restaurant"]                                     // Fine Dining (not an explicit type in Places API)
+        "0": ["meal_takeaway", "fast_food", "cafe"],  // Fast Food, Cafe
+        "1": ["restaurant"],                         // Casual Dining
+        "2": ["restaurant"]                          // Fine Dining (not an explicit type in Places API)
     };
 
     const excludeTypes = ["bar", "home_goods_store"];
@@ -64,9 +64,10 @@ function filterByType(results, type, lat, lon) {
     }
 
     let filteredResults = results.filter(restaurant =>
-        typeKeywords.some(keyword => restaurant.types.includes(keyword)) ||
-        (type === "0" && fastFoodKeywords.some(keyword => restaurant.name.toLowerCase().includes(keyword))) &&
-        !excludeTypes.some(excludeType => restaurant.types.includes(excludeType))
+        (typeKeywords.some(keyword => restaurant.types.includes(keyword)) ||
+        (type === "0" && fastFoodKeywords.some(keyword => restaurant.name.toLowerCase().includes(keyword)))) &&
+        !excludeTypes.some(excludeType => restaurant.types.includes(excludeType)) &&
+        (type !== "0" || (restaurant.types.includes("bakery") ? restaurant.types.includes("cafe") : true))
     );
 
     // Ensure fast food options are ordered by distance
@@ -78,16 +79,21 @@ function filterByType(results, type, lat, lon) {
     }
 
     const uniqueRestaurants = {};
+    const chainCounts = {};
     filteredResults.forEach(restaurant => {
         const name = restaurant.name.toLowerCase();
         if (!uniqueRestaurants[name] || calculateDistance(lat, lon, restaurant.geometry.location.lat, restaurant.geometry.location.lng) <
             calculateDistance(lat, lon, uniqueRestaurants[name].geometry.location.lat, uniqueRestaurants[name].geometry.location.lng)) {
             uniqueRestaurants[name] = restaurant;
+            chainCounts[name] = (chainCounts[name] || 0) + 1;
         }
     });
 
     console.log('Filtered Results:', Object.values(uniqueRestaurants)); // Log filtered results for debugging
-    return Object.values(uniqueRestaurants);
+    return Object.values(uniqueRestaurants).map(restaurant => {
+        restaurant.chainCount = chainCounts[restaurant.name.toLowerCase()];
+        return restaurant;
+    });
 }
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
