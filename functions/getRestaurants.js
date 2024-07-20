@@ -46,13 +46,13 @@ exports.handler = async function(event, context) {
 
 function filterByType(results, type, lat, lon) {
     const typesMap = {
-        "0": ["meal_takeaway", "fast_food"],  // Fast Food
-        "1": ["restaurant"],                 // Casual Dining
-        "2": ["restaurant"]                  // Fine Dining (not an explicit type in Places API)
+        "0": ["meal_takeaway", "fast_food", "restaurant"],  // Fast Food
+        "1": ["restaurant", "cafe", "bistro"],              // Casual Dining
+        "2": ["restaurant", "fine_dining", "gourmet"]       // Fine Dining (not an explicit type in Places API)
     };
 
     const fastFoodKeywords = [
-        "burger", "chicken", "sandwich", "fries", "fast food"
+        "burger", "chicken", "sandwich", "fries", "fast food", "wendy's", "dairy queen"
     ];
 
     const typeKeywords = typesMap[type];
