@@ -25,7 +25,6 @@ exports.handler = async function(event, context) {
         } while (nextPageToken);
 
         console.log('API Response:', allResults); // Log the API response for debugging
-        allResults.forEach(restaurant => console.log('Restaurant Types:', restaurant.types)); // Log types for each restaurant
 
         const filteredData = filterByType(allResults, type, lat, lon);
         return {
@@ -47,30 +46,26 @@ exports.handler = async function(event, context) {
 
 function filterByType(results, type, lat, lon) {
     const typesMap = {
-        "0": ["fast_food"],           // Fast Food
-        "1": ["restaurant"],          // Casual Dining
-        "2": ["restaurant"]           // Fine Dining (not an explicit type in Places API)
+        "0": ["meal_takeaway", "fast_food"],  // Fast Food
+        "1": ["restaurant"],                 // Casual Dining
+        "2": ["restaurant"]                  // Fine Dining (not an explicit type in Places API)
     };
 
-    const fastFoodChains = [
-        "mcdonald's", "subway", "burger king", "wendy's", "kfc", "taco bell", "dairy queen", "dairy queen grill & chill"
-    ];
-    
     const typeKeywords = typesMap[type];
-    
+
     if (!typeKeywords) {
         return results;
     }
 
     let filteredResults = results.filter(restaurant =>
-        typeKeywords.some(keyword => restaurant.types.includes(keyword)) ||
-        (type === "0" && fastFoodChains.some(chain => restaurant.name.toLowerCase().includes(chain)))
+        typeKeywords.some(keyword => restaurant.types.includes(keyword))
     );
 
-    // Ensure fast food options are excluded from casual and fine dining
-    if (type !== "0") {
-        filteredResults = filteredResults.filter(restaurant =>
-            !fastFoodChains.some(chain => restaurant.name.toLowerCase().includes(chain))
+    // Ensure fast food options are ordered by distance
+    if (type === "0") {
+        filteredResults.sort((a, b) => 
+            calculateDistance(lat, lon, a.geometry.location.lat, a.geometry.location.lng) -
+            calculateDistance(lat, lon, b.geometry.location.lat, b.geometry.location.lng)
         );
     }
 
