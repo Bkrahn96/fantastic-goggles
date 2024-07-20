@@ -1,5 +1,6 @@
 let currentResults = [];
 let currentIndex = 0;
+let userCoordinates = null;
 const RESULTS_PER_PAGE = 3;
 
 document.getElementById('findRestaurant').onclick = function() {
@@ -12,6 +13,7 @@ document.getElementById('findRestaurant').onclick = function() {
         navigator.geolocation.getCurrentPosition(function(position) {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
+            userCoordinates = { lat, lon };
             const restaurantType = document.getElementById('restaurantTypeSlider').value;
             const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}&type=${restaurantType}`;
 
@@ -52,8 +54,8 @@ function displayNextResults() {
     nextResults.forEach(restaurant => {
         const div = document.createElement('div');
         const distance = calculateDistance(
-            navigator.geolocation.getCurrentPosition.coords.latitude, 
-            navigator.geolocation.getCurrentPosition.coords.longitude, 
+            userCoordinates.lat, 
+            userCoordinates.lon, 
             restaurant.geometry.location.lat, 
             restaurant.geometry.location.lng
         );
@@ -74,7 +76,7 @@ function displayNextResults() {
     }
 
     // Scroll to the newly added items
-    nextResults[nextResults.length - 1].scrollIntoView({ behavior: 'smooth' });
+    results.lastChild.scrollIntoView({ behavior: 'smooth' });
 }
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
