@@ -1,10 +1,9 @@
 const fetch = require('node-fetch');
 
 exports.handler = async function(event, context) {
-    const { lat, lon, type, distance } = event.queryStringParameters;
+    const { lat, lon, type } = event.queryStringParameters;
     const apiKey = process.env.GOOGLE_PLACES_API_KEY;
-    const radius = distance * 1609.34; // Convert miles to meters
-    const baseUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=${radius}&type=restaurant&key=${apiKey}`;
+    const baseUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=5000&type=restaurant&key=${apiKey}`;
 
     try {
         let url = baseUrl;

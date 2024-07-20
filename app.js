@@ -7,7 +7,6 @@ document.getElementById('findRestaurant').onclick = function() {
     const results = document.getElementById('results');
     const loading = document.getElementById('loading');
     const loadMoreButton = document.getElementById('loadMore');
-    const maxDistance = document.getElementById('distanceSlider').value;
 
     if (navigator.geolocation) {
         loading.style.display = 'block';
@@ -16,7 +15,7 @@ document.getElementById('findRestaurant').onclick = function() {
             const lon = position.coords.longitude;
             userCoordinates = { lat, lon };
             const restaurantType = document.getElementById('restaurantTypeSlider').value;
-            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}&type=${restaurantType}&distance=${maxDistance}`;
+            const url = `/.netlify/functions/getRestaurants?lat=${lat}&lon=${lon}&type=${restaurantType}`;
 
             fetch(url)
                 .then(response => response.json())
@@ -28,7 +27,6 @@ document.getElementById('findRestaurant').onclick = function() {
                     loading.style.display = 'none';
                     loadMoreButton.style.display = currentResults.length > RESULTS_PER_PAGE ? 'block' : 'none';
                     displayNextResults();
-                    results.scrollIntoView({ behavior: 'smooth' }); // Scroll to results on first search
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
