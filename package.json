@@ -4,7 +4,7 @@
   "description": "A simple project to fetch nearby restaurants using Google Places API and Netlify Functions",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "echo 'Building the project...' && exit 0"
   },
   "dependencies": {
     "node-fetch": "^2.6.1"
