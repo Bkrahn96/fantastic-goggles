@@ -3,34 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Netlify Site</title>
-    <style>
-        /* Your existing styles */
-    </style>
-    <script>
-        function sendHeight() {
-            const height = document.body.scrollHeight;
-            window.parent.postMessage(height, '*');
-        }
-
-        window.addEventListener('message', function(event) {
-            if (event.data === 'getHeight') {
-                sendHeight();
-            }
-        }, false);
-
-        window.onload = sendHeight;
-    </script>
+    <title>Restaurant Finder</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
 </head>
 <body>
-    <!-- Your existing content -->
+    <div class="container">
+        <h1>Find a Restaurant</h1>
+        <button id="findRestaurant" class="styled-button">Find Nearby Restaurant</button>
+        
+        <div class="slider-container">
+            <input type="range" min="0" max="2" value="0" class="slider" id="mealTimeSlider">
+            <div class="slider-labels">
+                <span>Breakfast</span>
+                <span>Lunch</span>
+                <span>Dinner</span>
+            </div>
+        </div>
 
-    <!-- Make sure to call sendHeight() whenever content changes, for example, after loading more results -->
-    <script>
-        function loadMoreContent() {
-            // Your existing logic to add more content
-            sendHeight();
-        }
-    </script>
+        <div class="slider-container">
+            <input type="range" min="0" max="2" value="1" class="slider" id="restaurantTypeSlider">
+            <div class="slider-labels">
+                <span>Fast Food</span>
+                <span>Casual Dining</span>
+                <span>Fine Dining</span>
+            </div>
+        </div>
+
+        <div id="loading" style="display:none;">Loading...</div>
+        <div id="results"></div>
+        <button id="loadMore" class="styled-button" style="display:none;">More</button>
+    </div>
 </body>
 </html>
