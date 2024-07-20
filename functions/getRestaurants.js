@@ -47,15 +47,11 @@ exports.handler = async function(event, context) {
 function filterByType(results, type, lat, lon) {
     const typesMap = {
         "0": ["meal_takeaway", "fast_food", "cafe"],  // Fast Food, Cafe
-        "1": ["restaurant"],                         // Casual Dining
+        "1": ["restaurant", "bar", "pub", "bakery", "cafe", "pizza", "burger"],  // Casual Dining
         "2": ["restaurant"]                          // Fine Dining (not an explicit type in Places API)
     };
 
-    const excludeTypes = ["bar", "home_goods_store"];
-
-    const fastFoodKeywords = [
-        "burger", "chicken", "sandwich", "fries", "fast food", "wendy's", "dairy queen"
-    ];
+    const excludeFastFoodChains = ["mcdonald's", "subway", "burger king", "wendy's", "kfc", "taco bell", "dairy queen", "dairy queen grill & chill"];
 
     const typeKeywords = typesMap[type];
 
@@ -65,18 +61,15 @@ function filterByType(results, type, lat, lon) {
 
     let filteredResults = results.filter(restaurant =>
         (typeKeywords.some(keyword => restaurant.types.includes(keyword)) ||
-        (type === "0" && fastFoodKeywords.some(keyword => restaurant.name.toLowerCase().includes(keyword)))) &&
-        !excludeTypes.some(excludeType => restaurant.types.includes(excludeType)) &&
-        (type !== "0" || (restaurant.types.includes("bakery") ? restaurant.types.includes("cafe") : true))
+        (type === "1" && ["pizza", "burger", "bar", "pub", "bakery", "cafe"].some(keyword => restaurant.types.includes(keyword)))) &&
+        !excludeFastFoodChains.some(chain => restaurant.name.toLowerCase().includes(chain))
     );
 
-    // Ensure fast food options are ordered by distance
-    if (type === "0") {
-        filteredResults.sort((a, b) => 
-            calculateDistance(lat, lon, a.geometry.location.lat, a.geometry.location.lng) -
-            calculateDistance(lat, lon, b.geometry.location.lat, b.geometry.location.lng)
-        );
-    }
+    // Ensure results are ordered by distance
+    filteredResults.sort((a, b) => 
+        calculateDistance(lat, lon, a.geometry.location.lat, a.geometry.location.lng) -
+        calculateDistance(lat, lon, b.geometry.location.lat, b.geometry.location.lng)
+    );
 
     const uniqueRestaurants = {};
     const chainCounts = {};
