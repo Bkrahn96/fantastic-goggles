@@ -8,20 +8,29 @@
         /* Your existing styles */
     </style>
     <script>
+        function sendHeight() {
+            const height = document.body.scrollHeight;
+            window.parent.postMessage(height, '*');
+        }
+
         window.addEventListener('message', function(event) {
             if (event.data === 'getHeight') {
-                const height = document.body.scrollHeight;
-                event.source.postMessage(height, event.origin);
+                sendHeight();
             }
         }, false);
 
-        window.onload = function() {
-            const height = document.body.scrollHeight;
-            window.parent.postMessage(height, '*');
-        };
+        window.onload = sendHeight;
     </script>
 </head>
 <body>
     <!-- Your existing content -->
+
+    <!-- Make sure to call sendHeight() whenever content changes, for example, after loading more results -->
+    <script>
+        function loadMoreContent() {
+            // Your existing logic to add more content
+            sendHeight();
+        }
+    </script>
 </body>
 </html>
