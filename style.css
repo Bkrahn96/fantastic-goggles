@@ -12,10 +12,20 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center; /* Center the content */
 }
-.big-button {
-    font-size: 1.5em;
-    padding: 15px 30px;
+.styled-button {
+    font-size: 1em;
+    padding: 10px 20px;
     margin: 20px 0;
+    background: linear-gradient(to right, #4caf50, #81c784);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+.styled-button:hover {
+    background: linear-gradient(to right, #388e3c, #66bb6a);
 }
 .slider-container {
     margin: 20px 0;
