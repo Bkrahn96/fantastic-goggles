@@ -51,6 +51,10 @@ function filterByType(results, type, lat, lon) {
         "2": ["restaurant"]                  // Fine Dining (not an explicit type in Places API)
     };
 
+    const fastFoodKeywords = [
+        "burger", "chicken", "sandwich", "fries", "fast food"
+    ];
+
     const typeKeywords = typesMap[type];
 
     if (!typeKeywords) {
@@ -58,7 +62,8 @@ function filterByType(results, type, lat, lon) {
     }
 
     let filteredResults = results.filter(restaurant =>
-        typeKeywords.some(keyword => restaurant.types.includes(keyword))
+        typeKeywords.some(keyword => restaurant.types.includes(keyword)) ||
+        (type === "0" && fastFoodKeywords.some(keyword => restaurant.name.toLowerCase().includes(keyword)))
     );
 
     // Ensure fast food options are ordered by distance
