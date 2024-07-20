@@ -26,7 +26,10 @@ document.getElementById('findRestaurant').onclick = function() {
                     results.innerHTML = '';
                     loading.style.display = 'none';
                     loadMoreButton.style.display = currentResults.length > RESULTS_PER_PAGE ? 'block' : 'none';
-                    displayNextResults();
+                    const newElements = displayNextResults();
+                    if (newElements.length > 0) {
+                        newElements[0].scrollIntoView({ behavior: 'smooth' });
+                    }
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
@@ -43,13 +46,18 @@ document.getElementById('findRestaurant').onclick = function() {
 };
 
 document.getElementById('loadMore').onclick = function() {
-    displayNextResults();
+    const newElements = displayNextResults();
+    if (newElements.length > 0) {
+        newElements[0].scrollIntoView({ behavior: 'smooth' });
+    }
 };
 
 function displayNextResults() {
     const results = document.getElementById('results');
     const loadMoreButton = document.getElementById('loadMore');
     const nextResults = currentResults.slice(currentIndex, currentIndex + RESULTS_PER_PAGE);
+
+    const newElements = [];
 
     nextResults.forEach(restaurant => {
         const div = document.createElement('div');
@@ -70,6 +78,7 @@ function displayNextResults() {
             ${chainNote}
         `;
         results.appendChild(div);
+        newElements.push(div);
     });
 
     currentIndex += RESULTS_PER_PAGE;
@@ -77,8 +86,7 @@ function displayNextResults() {
         loadMoreButton.style.display = 'none';
     }
 
-    // Scroll to the newly added items
-    results.lastChild.scrollIntoView({ behavior: 'smooth' });
+    return newElements;
 }
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
