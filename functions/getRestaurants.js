@@ -46,10 +46,12 @@ exports.handler = async function(event, context) {
 
 function filterByType(results, type, lat, lon) {
     const typesMap = {
-        "0": ["meal_takeaway", "fast_food", "restaurant"],  // Fast Food
-        "1": ["restaurant", "cafe", "bistro"],              // Casual Dining
-        "2": ["restaurant", "fine_dining", "gourmet"]       // Fine Dining (not an explicit type in Places API)
+        "0": ["meal_takeaway", "fast_food", "cafe", "bakery"],  // Fast Food, Cafe, Bakery
+        "1": ["restaurant"],                                    // Casual Dining
+        "2": ["restaurant"]                                     // Fine Dining (not an explicit type in Places API)
     };
+
+    const excludeTypes = ["bar", "home_goods_store"];
 
     const fastFoodKeywords = [
         "burger", "chicken", "sandwich", "fries", "fast food", "wendy's", "dairy queen"
@@ -63,7 +65,8 @@ function filterByType(results, type, lat, lon) {
 
     let filteredResults = results.filter(restaurant =>
         typeKeywords.some(keyword => restaurant.types.includes(keyword)) ||
-        (type === "0" && fastFoodKeywords.some(keyword => restaurant.name.toLowerCase().includes(keyword)))
+        (type === "0" && fastFoodKeywords.some(keyword => restaurant.name.toLowerCase().includes(keyword))) &&
+        !excludeTypes.some(excludeType => restaurant.types.includes(excludeType))
     );
 
     // Ensure fast food options are ordered by distance
